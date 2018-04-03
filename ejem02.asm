@@ -27,11 +27,10 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		push 0				; RAMEND (último elemento de memoria)
 		
 		mov EAX, 0FFh			; Mover un número a un registro
-		; move EAX, 255		
-		mov [var2], 020h		 Mover el valor 020H a la variable var2
-		mov EBX, EAX
-		; mov Rd, Rs
-		; var2 = 020h;
+						; move EAX, 255		
+		mov [var2], 020h		; Mover el valor 020H a la variable var2
+		mov EBX, EAX			; Mover el valor de registro EAX al registro EBX
+
 		mov byte ptr [var], 5		; Almacenar el valor de 5 en un byte en la locación var
 						; Al utilizar [] quiere decir que no se quiere la locación del identificador, sino su valor
 		
@@ -39,10 +38,8 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		nop
 		pop edi				; Obtener el valor que se encuentra en el pila y vaciarlo al registro EDI
 		
-		; Load Effective Address
 		lea ebx, [var]			; Cargar la dirección Efectiva de la variable (probar ebx, var)
 		lea ecx, [eax]			; Esto funciona como mov (probar ecx, eax)
-
 		
 		push 0
 		call ExitProcess@4		; Llamada a la función de la API
