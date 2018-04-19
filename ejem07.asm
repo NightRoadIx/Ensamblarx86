@@ -7,6 +7,8 @@ extrn ExitProcess@4:proc				; Funciones de la API Win32 (@bytes que toman sus pa
 .data							; Crear un segmento de datos cercano, las variables locales se especifican después
 	x	DD	2, 4, 3				; Un arreglo con 3 datos
 	sum	DD	0				; Una variable para guardar el valor de la suma
+	; Los arreglos también se pueden crear al resservar espacios en memoria mediante:
+	arr2	DD 5 DUP(1)				; Declarar un arreglo de 5 valores de 4-bytes, todos iniciados a 1	
 
 .code							; Indica el comienzo del segmento de código
 	main:						; Etiqueta main
