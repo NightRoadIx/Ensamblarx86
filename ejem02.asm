@@ -18,7 +18,7 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 	; double_word Y = 30000;	{{32 bits}}
 	Z		DD	1, 2, 3		; Declarar 3 valores de 4-bytes, iniciados en 1, 2 y 3. El valor de la locación Z+8 es 3
 	; double_word Z[] = {1, 2, 3};
-	arr		DD	100, (0)	; Declarar 100 valores de 4-bytes iniciando en la locación arr, todos iniciados a 0
+	arr		DD	100 DUP(0)	; Declarar 100 valores de 4-bytes iniciando en la locación arr, todos iniciados a 0
 	; double_word arr[100] = {0,0,0,...,0};
 	
 .code						; Indica el comienzo del segmento de código
