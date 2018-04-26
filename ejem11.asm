@@ -5,6 +5,7 @@
 extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus parámetros)
 
 .data								; Crear un segmento de datos cercano, las variables locales se especifican después
+	flotar	DD	3.75
 	var1	DD	123.45				; Precisión sencilla
 	var2	DQ	123.45				; Precisión doble
 
@@ -18,7 +19,7 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		nop							; No Operation
 		push 0
 
-		lea esi, var1				; Obtener la dirección donde se guardan los datos
+		lea esi, flotar				; Obtener la dirección donde se guardan los datos
 
 		; La instrucciones de punto flotante
 		; Los procesadores originales de la familia x86 tienen un coprocesador matemático que se encarga de realizar el manejo de las
@@ -32,7 +33,25 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		; errores, son de 80 bits.
 
 		; Además cuenta con los registros de propósito especial:
-		; Registro de estado
+		; Registro de estado, el cual indica el estado actual de la FPU, las banderas son:
+		;	Pin		Nombre			Características
+		;	0		IE				Operación inválida
+		;	1		DE				Operación no normalizada
+		;	2		ZE				División entre 0
+		;	3		OE				Desbordamiento hacia arriba
+		;	4		UE				Desbordamiento hacia abajo
+		;	5		PE				Precisión
+		;	6		SF				Falla en la pila
+		;	7		ES				Estado de los errores
+		;	8		C0				
+		;	9		C1				Código de condiciones
+		;	10		C2
+		;	11		TOP
+		;	12		TOP				Apuntador de la pila
+		;	13		TOP
+		;	14		C3
+		;	15		B				FPU ocupada
+		;
 		; Registro de control
 		; Registro tag word (etiqueta de palabra)
 		; Registro apuntador de última instrucción
@@ -106,15 +125,21 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		; COMPARACIÓN
 		; FCOM			Comparar números de punto flotante
 
+		; El código de comparación se guarda en los bits 
+
 		; Para hacer saltos o ramificaciones, se debe movilizar el registro de estado de la FPU hacia los registros del x86
 		; para ello se puede utilizar las instrucciones:
-		; FSTSW AX para mover el registro de estado al registro AX
-		; Después con la instrucción TEST, comparar el contenido del registro AX con una constante y modificará
+		; 1.- FSTSW AX para mover el registro de estado al registro AX
+		; 2.- SAHF copia los 8 bits superiores del registro AX en el registro EFLAGS
+		; 3.- O tambiénse puede con la instrucción TEST, comparar el contenido del registro AX con una constante y modificará
 		; la bandera ZF de EFLAGS. Las constantes son las siguientes:
 		; ST(0) > Operando fuente		Constante 4500H		Utilizar JZ
 		; ST(0) < Operando fuente		Constante 0100H		Utilizar JNZ
 		; ST(0) = Operando fuente		Constante 4000H		Utilizar JNZ
 
+		; O con el nuevo mecanismo, puede utilizarse directamente la instrucción FCOMI, lo cual moverá de forma automática
+		; los bits de comparación a EFLAGS
+		fcomi st(0), st(1)
 
 		push 0						; La siguiente función requiere de un 0
 		call ExitProcess@4			; Llamada a la función de la API ( exit(0) )
