@@ -50,20 +50,22 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 		; El punto es que al definir la propia ventana, se debe de llenar las características deseadas en una estructura 
 		; WNDCLASS o WNDCLASSEX y llamar a RegisterClass o RegisterClassEx antes de que puedas crear la ventana. 
 		; Solo debe registrar la clase de ventana una vez para cada tipo de ventana desde la que desee crearla.
-		mov   wc.cbSize,SIZEOF WNDCLASSEX		; Llenar los valores de los miembros de la variable wc
+		
+		; Llenar los valores de los miembros de la variable wc
+		mov   wc.cbSize,SIZEOF WNDCLASSEX
 		mov   wc.style, CS_HREDRAW or CS_VREDRAW 
 		mov   wc.lpfnWndProc, OFFSET WndProc 
 		mov   wc.cbClsExtra,NULL 
 		mov   wc.cbWndExtra,NULL 
 		push  hInstance 
 		pop   wc.hInstance 
-		mov   wc.hbrBackground,COLOR_WINDOW+1 
+		mov   wc.hbrBackground,COLOR_WINDOW+2		; COLOR_GRAYTEXT / COLOR_BTNSHADOW / COLOR_WINDOWFRAME ...
 		mov   wc.lpszMenuName,NULL 
 		mov   wc.lpszClassName,OFFSET ClassName 
-		invoke LoadIcon,NULL,IDI_APPLICATION 
+		invoke LoadIcon,NULL,IDI_APPLICATION 	; IDI_EXCLAMATION / IDI_ASTERISK / IDI_ERROR / IDI_HAND / IDI_INFORMATION / IDI_QUESTION / IDI_SHIELD / IDI_WARNING / IDI_WINLOGO
 		mov   wc.hIcon,eax 
 		mov   wc.hIconSm,eax 
-		invoke LoadCursor,NULL,IDC_ARROW 
+		invoke LoadCursor,NULL,IDC_ARROW	; IDC_APPSTARTING / IDC_CROSS / IDC_HAND / IDC_HELP / IDC_IBEAM / IDC_NO / IDC_WAIT
 		mov   wc.hCursor,eax 
 		invoke RegisterClassEx, addr wc                       ; Registrar la clase ventana
 		invoke CreateWindowEx,NULL,\ 
