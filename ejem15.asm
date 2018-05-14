@@ -1,3 +1,8 @@
+; Los programas de Windows realizan la parte pesada del trabajo de programación a través de funciones API para sus GUI.
+; Esto beneficia a los usuarios ya los programadores, a los usuarios por que no tienen porque aprender como navegar por una GUI en cada programa
+; y a los programadores por que tienen disponibles las rutinas GUI ya probadas y listas para ser utilizadas.
+; Lo único malo de esto es que la complejidad para la programación aumenta al tener que seguir una "receta" estricta 
+; pero esto puede superarse al utilizar una programación modular o con el paradigma de la POO.
 .686										; 
 .model flat,stdcall 						; 
 option casemap:none 						; 
@@ -29,9 +34,11 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 	start: 
 		invoke GetModuleHandle, NULL		; Obtener el identificador de instancia del programa 
                                             ; En Win32, hmodule==hinstance mov hInstance,eax 
+
 		mov hInstance,eax 
 		invoke GetCommandLine				; Obtener la línea de comando. No es necesario llamar a esta función
 											; Si el programa no procesa la línea de comando
+
 		mov CommandLine,eax 
 		invoke WinMain, hInstance,NULL,CommandLine, SW_SHOWDEFAULT		; Llamar a la función principal
 		invoke ExitProcess, eax                           				; Salir del programa. El código de salida es retornado de EAX desde WinMain
@@ -67,8 +74,8 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 		mov   wc.hIconSm,eax 
 		invoke LoadCursor,NULL,IDC_ARROW	; IDC_APPSTARTING / IDC_CROSS / IDC_HAND / IDC_HELP / IDC_IBEAM / IDC_NO / IDC_WAIT
 		mov   wc.hCursor,eax 
-		invoke RegisterClassEx, addr wc                       ; Registrar la clase ventana
-		invoke CreateWindowEx,NULL,\ 
+		invoke RegisterClassEx, addr wc                     ; Registrar la clase ventana
+		invoke CreateWindowEx,NULL,\						; Crear la ventana
             ADDR ClassName,\ 
             ADDR AppName,\ 
             WS_OVERLAPPEDWINDOW,\ 
@@ -85,18 +92,27 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 			invoke UpdateWindow, hwnd						; actualizar el área del cliente
 
     .WHILE TRUE												; Entrar al loop del mensaje
-                invoke GetMessage, ADDR msg,NULL,0,0 
-                .BREAK .IF (!eax) 							; 
-                invoke TranslateMessage, ADDR msg 
-                invoke DispatchMessage, ADDR msg 
+                invoke GetMessage, ADDR msg,NULL,0,0		; Obtener los mensajes de Windows, esto es "conectarla" al mundo exterior
+															; Durante este punto Windows puede darle el control a otros programas, formando
+															; el esquema multitareas cooperativas de Win16
+                .BREAK .IF (!eax) 							; GetMessage regresa FALSE si el mensaje WM_QUIT es recibido
+                invoke TranslateMessage, ADDR msg			; Esto recibe la información del teclado en formato ASCII
+                invoke DispatchMessage, ADDR msg			; DispatchMessage envía los datos del mensaje al proecedimiento de ventana responsable
+															; por la ventana específica a la cual va dirigido el mensaje
    .ENDW 
     ; Cuando el ciclo termina, el código de salida se almacena en wParam de le estructura MSG
     mov     eax,msg.wParam									; Regresar el código de salida en EAX
     ret 
 WinMain endp
 
+; Esto es en donde reside la "inteligencia" de los programas
+; El código que responde a cada mensaje de Windows está en el procedimiento de ventana. 
+; El código debe chequear el mensaje de Windows para ver si hay un mensaje que sea de interés. 
+; Si lo es, se hace algo que se desee en respuesta a ese mensaje y luego se regresa cero en eax. 
+; Si no es así, debe llamarse a DefWindowProc, pasando todos los parámetros recibidos para su procesamiento por defecto. 
+; DefWindowProc es una función de la API que procesa los mensajes en los que tu programa no está interesado
 WndProc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM 
-    .IF uMsg==WM_DESTROY									; si el usuario cierra la ventana
+    .IF uMsg==WM_DESTROY									; si el usuario cierra la ventana, es el único mensaje que se debe responder
         invoke PostQuitMessage,NULL							; Detener la aplicación
     .ELSE 
         invoke DefWindowProc,hWnd,uMsg,wParam,lParam		; Esta es una función de la API que procesa todos los mensajes
@@ -108,8 +124,3 @@ WndProc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM
 WndProc endp
 
 end start
-
-
-
-
-
