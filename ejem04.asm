@@ -55,12 +55,13 @@ extrn ExitProcess@4:proc
 		mov ebx, 3
 		imul eax, ebx, 5	; eax = ebx * 25
 		
-		; Operación "idiv" realiza la división de edx:eax entre el registro utilizado como operando
-		; el cociente se deja guardado en eax y el residuo en edx
-		mov edx, 0
-		mov eax, 25
-		mov ebx, 3
-		idiv ebx
+		; Operación "idiv" realiza la división del número de 64 bits edx:eax, entre el registro utilizado como operando
+		; el cociente se deja guardado en eax y el residuo en edx		
+		; Por tanto si se desea dividir 25 / 3
+		mov edx, 0		; Se carga un 0 en la parte "alta" del registro de 64 bits formado por edx:eax
+		mov eax, 25		; Se carga el 25 en la parte "baja" del registro, ahora hay un valor de 0:25, el dividendo
+		mov ebx, 3		; Se carga el 3 en el registro ebx que funcionará como el divisor
+		idiv ebx		; Se hace la operación (edx:eax) / ebx
 		
 		; Operaciones de rotación de bits
 		; RCL Rotar bits a la izquierda, pero tomando en cuenta la bandera CF de acarreo del registro de estado
