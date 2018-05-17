@@ -12,11 +12,16 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		nop				; Sin operación
 		push 0				; Empujar un 0 a la pila
 
-		mov eax, 72h			; Ingresar un número directo al registro (decimal, hexadecimal, binario)
+		; Ingresar un número directo al registro (por representación decimal, hexadecimal, binario)
+		; decimal, se coloca el número tal cual
+		mov eax, 10
+		; binaria, el número se coloca con una 'b' al final
+		mov eax, 10010101b
+		; hexadecimal, el número se coloca con una 'h' al final
+		mov eax, 72h
+		
 		mov ebx, eax			; Mover datos entre registros
 		add eax, ebx			; Sumar los valores en los registros
-
-		mov eax, [40100H]		; Mover los datos en la dirección 0x40100 al registro eax
 
 		push 0				; Mandar un 0 a la pila (argumento utilizado por el proceso siguiente)
 		call ExitProcess@4		; Llamada a la función de la API
