@@ -7,6 +7,10 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 
 .data						; Sección de datos
 
+.data ?						; Sección de datos sin iniciar
+
+.const						; Sección de constantes
+
 .code						; Sección del código
 	main:					; Etiqueta que define un segmento del código del programa
 		nop				; Sin operación
@@ -27,4 +31,4 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		push 0				; Mandar un 0 a la pila (argumento utilizado por el proceso siguiente)
 		call ExitProcess@4		; Llamada a la función de la API
 
-	end main				; Terminar la etiqueta
+	end main				; Terminar la etiqueta del segmento de código del programa
