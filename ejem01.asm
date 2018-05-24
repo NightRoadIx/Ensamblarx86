@@ -7,7 +7,7 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 
 .data						; Sección de datos
 
-.data ?						; Sección de datos sin iniciar
+.data?						; Sección de datos sin iniciar
 
 .const						; Sección de constantes
 
