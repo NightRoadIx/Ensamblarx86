@@ -17,11 +17,11 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		; move 10 to register eax
 		mov eax, 10
 		; binaria, el número se coloca con una 'b' al final
-		mov eax, 10010101b
+		mov ebx, 10010101b
 		; hexadecimal, el número se coloca con una 'h' al final
-		mov eax, 72h
+		mov ecx, 72h
 		
-		mov ebx, eax			; Mover datos entre registros
+		mov edx, eax			; Mover datos entre registros
 		add eax, ebx			; Sumar los valores en los registros eax = eax + ebx
 
 		push 0				; Mandar un 0 a la pila (argumento utilizado por el proceso siguiente)
