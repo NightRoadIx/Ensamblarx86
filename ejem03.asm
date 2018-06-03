@@ -11,6 +11,18 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		nop
 		push 0
 		
+		; REGISTROS DE PROPÓSITO GENERAL EAX, EBX, ECX, EDX
+		; Estos son registros de 32 bits, sin embargo se subdividen en registros de 8 y 16 bits
+		; para contar con una mayor cantidad de registros
+		; ES MUY IMPORTANTE OBSERVAR COMO SE MUEVEN LOS DATOS DE UN REGISTRO A OTRO
+		; ¡PUES ES IMPOSIBLE HACER CABER UN VALOR DE 32 BITS EN UN REGISTRO DE 8 BITS!
+		mov eax, 0			; Mover un 0 al registro EAX de 32 bits (limpiar todo el registro)
+		mov al, 8			; Mover un valor de 8 bits a la parte "baja" del registro AX
+		mov ah, 1			; Mover un valor de 8 bits a la parte "alta" del registro AX
+		; En este momento el registro debe valer 0x0108
+		mov ax, 1492		; Mover un valor de 16 bits al registro AX
+		mov eax, 14000605	; Mover un valor de 32 bits al registro EAX		
+		
 		; MANEJO BÁSICO DE LA ALU, OPERACIONES ARTIMÉTICO LÓGICAS (Y DESPLAZAMIENTO DE BITS)
 		; [[ PONER MUCHA ATENCIÓN A LOS BITS DEL REGISTRO DE ESTADO ]]
 		
