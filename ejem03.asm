@@ -36,14 +36,13 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 						; DEC operando
 
 		add eax, ebx			; Suma de los datos que se encuentran en los registros eax, ebx									
-		shl eax, 1			; SHift Left datos en registro eax, 1 bit
 		sub eax, ebx			; SUBstraer al valor del registro eax, el valor del registro ebx
 						; ADD destino, fuente.	Pueden ser:
 						; Registro a Registro			ADD reg, reg
 						; Memoria a registro			ADD mem, reg
 						; Registro a memoria			ADD reg, mem
 						; Registro a dato constante		ADD reg, inmediato
-		mov [res], eax			; Mover el resultado del registro eax a la variable en memoria res
+		mov ecx, eax			; Mover el resultado del registro eax a la variable en memoria res
 				
 		mul ebx				; MULtiplicar el valor en el registro eax por ebx
 
