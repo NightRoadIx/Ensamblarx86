@@ -26,7 +26,7 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		; MANEJO BÁSICO DE LA ALU, OPERACIONES ARTIMÉTICO LÓGICAS (Y DESPLAZAMIENTO DE BITS)
 		; [[ PONER MUCHA ATENCIÓN A LOS BITS DEL REGISTRO DE ESTADO ]]
 		
-		; OPERACIONES ARITMÉTICAS
+		; ******* OPERACIONES ARITMÉTICAS *******
 		mov eax, 1			; Cargar datos en registro eax (MOVer datos)
 		mov ebx, 5			; Cargar datos en registro ebx
 
@@ -45,10 +45,38 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		mov ecx, eax			; Mover el resultado del registro eax a la variable en memoria res
 				
 		mul ebx				; MULtiplicar el valor en el registro eax por ebx
+		; La multiplicación se puede presentar en 3 casos
+		; 1.- Multiplicar dos bytes
+		; Se considera que uno de los multiplicandos está en el registro AL
+		; El otro en algún registro de 8 bits (BL, BH, CL, CH, DL, DH e incluso AH)
+		; Si se quiere multiplicar AL x BL se coloca:
+		; mul bl
+		; El resultado se guarda en AH:AL
 
+		; 2.- Multiplicar dos words
+		; Multiplicando en AX, mientras que el otro en cualquier registro de tamaño word (BX, CX, DX)
+		; La operación es AX x BX = DX:AX 
+		; mul bx
+
+		; 3.- La operación realizada en el ejemplo, 2 palabras dobles
+		; se hace: EAX x EBX = EDX:EAX
+
+		mov ebx, 3
 		div ebx				; DIVidir el valor en el registro eax entre ebx
+		; Para la división hay igual 3 casos:
+		; 1.- Dividir bytes
+		; El dividendo es un word almacenado en AX y se divide por algún byte (por ejemplo BL)
+		; AX / BL = AL			y el residuo queda en AH
 
-		; OPERACIONES LÓGICAS
+		; 2.- Dividir words
+		; El dividendo es una dword almacenada en los registros DX:AX y se divide por alguna word (por ejemplo BX)
+		; DX:AX / BX = AX		y el residuo en DX
+
+		; 3.- Dividir dwords (ejemplo)
+		; El dividendo es una qword almacenada en EDX:EAX y el divisor es una dword (por ejemplo EBX)
+		; EDX:EAX / EBX = EAX	y el residuo en EDX
+
+		; ******* OPERACIONES LÓGICAS *******
 
 		mov eax, 170			; Mover valor 170 al registro eax
 		and eax, 15			; Hacer eax = eax AND 15
