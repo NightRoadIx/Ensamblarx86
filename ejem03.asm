@@ -21,10 +21,19 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 		mov ah, 1			; Mover un valor de 8 bits a la parte "alta" del registro AX
 		; En este momento el registro debe valer 0x0108
 		mov ax, 1492		; Mover un valor de 16 bits al registro AX
-		mov eax, 14000605	; Mover un valor de 32 bits al registro EAX		
+		mov eax, 14000605	; Mover un valor de 32 bits al registro EAX				
+		
+		; entonces simplemente los 4 registros disponibles de propósito general (EAX, EBX, ECX, EDX)
+		; se subdividen en:
+		; 
+		;  EAX (32 bits)
+		; ---------------------------------------
+		; |                  |   AH    |   AL   |  (cada uno de 8 bits)
+		; ---------------------------------------
+		;					  AX (16 bits)		
 		
 		; MANEJO BÁSICO DE LA ALU, OPERACIONES ARTIMÉTICO LÓGICAS (Y DESPLAZAMIENTO DE BITS)
-		; [[ PONER MUCHA ATENCIÓN A LOS BITS DEL REGISTRO DE ESTADO ]]
+		; [[ PONER MUCHA ATENCIÓN A LOS BITS DEL REGISTRO DE ESTADO ]]		
 		
 		; ******* OPERACIONES ARITMÉTICAS *******
 		mov eax, 1			; Cargar datos en registro eax (MOVer datos)
@@ -78,27 +87,45 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 
 		; ******* OPERACIONES LÓGICAS *******
 
-		mov eax, 170			; Mover valor 170 al registro eax
-		and eax, 15			; Hacer eax = eax AND 15
+		mov eax, 170		; Mover valor 170 al registro eax
+		and eax, 15		; Hacer eax = eax AND 15
+					; Recordar que la operación AND se efectua bit a bit sobre ambos operandos
+					; Esto quiere decir:
+					; 170 = 10101010b = 0xAA
+					;  15 = 00001111b = 0x0F
+					; -----------------------
+					;  10 = 00001010b = 0x0A  (A esto se le conoce como "enmascaramiento")
 
-		mov eax, 170			; Mover valor 170 al registro eax
-		or eax, 15			; Hacer eax = eax OR 15
+		mov eax, 170		; Mover valor 170 al registro eax
+		or eax, 15		; Hacer eax = eax OR 15
+					; Recordar que la operación OR se efectua bit a bit sobre ambos operandos
+					; Esto quiere decir:
+					; 170 = 10101010b = 0xAA
+					;  15 = 00001111b = 0x0F
+					; -----------------------
+					; 175 = 10101111b = 0xAF
 
-		mov eax, 170			; Mover valor 170 al registro eax
-		xor eax, 15			; Hacer eax = eax XOR 15
+		mov eax, 170		; Mover valor 170 al registro eax
+		xor eax, 15		; Hacer eax = eax XOR 15
+					; Recordar que la operación AND se efectua bit a bit sobre ambos operandos
+					; Esto quiere decir:
+					; 170 = 10101010b = 0xAA
+					;  15 = 00001111b = 0x0F
+					; -----------------------
+					; 165 = 10100101b = 0xA5	
 
-		mov eax, 170			; Mover valor 170 al registro eax
-		not eax				; Hacer eax = negado(eax)
+		mov eax, 170		; Mover valor 170 al registro eax
+		not eax			; Hacer eax = negado(eax)
 
 		; OPERACIONES DE DESPLAZAMIENTO DE BITS
 
-		mov eax, 48			; Mover valor 48 al regisro eax
-		shr eax, 3			; Desplazamiento de 3 bits a la derecha
-						; shl desplazamiento de bits a la izquierda
+		mov eax, 48		; Mover valor 48 al regisro eax
+		shr eax, 3		; Desplazamiento de 3 bits a la derecha
+					; shl desplazamiento de bits a la izquierda
 
-		ror eax, 7			; Rotación de 7 bits a la derecha
-						; rol rotación de bits a la izquierda
+		ror eax, 7		; Rotación de 7 bits a la derecha
+					; rol rotación de bits a la izquierda
 
 		push 0
-		call ExitProcess@4		; Llamada a la función de la API
+		call ExitProcess@4	; Llamada a la función de la API
 	end main
