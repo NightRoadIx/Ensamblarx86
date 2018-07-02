@@ -68,7 +68,7 @@ extrn ExitProcess@4:proc			; Funciones de la API Win32 (@bytes que toman sus par
 
 		; ******* MANEJO DE LA PILA *******
 
-		mov eax, 012345678h		; Mober un número grande al registro EAX
+		mov eax, 012345678h		; Mover un número grande al registro EAX
 		
 		push ax				; Enviar eax a la pila
 		nop
